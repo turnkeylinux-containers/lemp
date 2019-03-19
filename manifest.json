@@ -1,12 +1,15 @@
 {
-    "build": { "KEEP_USER": "www-data" },
     "meta": {
-        "name": "lemp",
-        "version": "0.1",
+        "build_args": {
+            "PRODUCT_NAME": "lemp",
+            "PRODUCT_VERSION": "0.2",
+            "BASE_IMAGE": "qrntz/php-fpm:7.3",
+            "KEEP_USER": "www-data"
+        },
         "containers": [
             { 
                 "name": "lemp",
-                "version": "0.1",
+                "version": "0.2",
                 "environment": {
                     "INIT_URL": "https://s3.amazonaws.com/lexp-test/test.tar.gz"
                 },
@@ -25,12 +28,6 @@
                         "sourceVolume": "initdb",
                         "containerPath": "/etc/turnkey/initdb",
                         "readOnly": false
-                    }
-                ],
-                "pre_confs": [
-                    {
-                        "name": "php-fpm",
-                        "version": "7.2"
                     }
                 ],
                 "cpu": 512,
