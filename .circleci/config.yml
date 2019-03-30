@@ -17,7 +17,6 @@ jobs:
           echo "$AUTHTOKEN" | base64 -d | cut -d: -f2 | docker login -u AWS --password-stdin "$REPO"
           mkdir -p build
           docker pull "$REPO/keyhole-builder:master"
-          echo $BASE_IMAGE
           if [[ -n $BASE_IMAGE ]]; then docker pull "$BASE_IMAGE"; fi
           if [[ -d overlay ]]; then cp -r overlay build/overlay; else mkdir -p build/overlay; fi
           mkdir -p build/overlay/usr/share/tklc/conf
