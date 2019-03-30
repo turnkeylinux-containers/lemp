@@ -15,6 +15,7 @@ jobs:
           jq -r '.meta.build_args | to_entries | ((map("--build-arg=\(.key)=\(.value)") | join(" ") as $x | "export BUILD_ARGS=\"\($x)\""), (.[] | "export \(.key)=\"\(.value)\""))' manifest.json >> $BASH_ENV
       - run: |
           set -x
+          echo "$AUTHDATA"
           jq -r '.authorizationToken' <<< "$AUTHDATA"
           jq -r '.authorizationToken' <<< "$AUTHDATA" | base64 -d | cut -d: -f2 | docker login -u AWS --password-stdin "$REPO"
           mkdir -p build
