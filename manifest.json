@@ -2,7 +2,7 @@
     "meta": {
         "build_args": {
             "PRODUCT_NAME": "lemp",
-            "PRODUCT_VERSION": "0.2",
+            "PRODUCT_VERSION": "0.3",
             "BASE_IMAGE": "$REPO/php-fpm:7.3",
             "KEEP_USER": "www-data"
         },
@@ -36,7 +36,7 @@
             {
 
                 "name": "nginx",
-                "version": "1.14.0",
+                "version": "1.14.2",
                 "ports": { "80": "tcp", "443": "tcp" },
                 "mountPoints": [
                     {
@@ -55,7 +55,7 @@
             },
             {
                 "name": "mariadb",
-                "version": "10.1",
+                "version": "10.3",
                 "cpu": 256,
                 "ram": 1024,
                 "mountPoints": [
