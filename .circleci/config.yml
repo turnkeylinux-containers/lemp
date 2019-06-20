@@ -47,8 +47,8 @@ jobs:
             --parameters 'ParameterKey=KeyName,ParameterValue=test' \
             --template-body "$( cat template.json )"
             aws cloudformation wait stack-create-complete --stack-name "$STACK_NAME"
-            curl -sN $( aws cloudformation describe-stacks --stack-name "$STACK_NAME" --output text --query "Stacks[].Outputs[?OutputKey == 'ExternalELBUrl'].OutputValue" ) \
-            | grep -q 'LEMP'
+            curl $( aws cloudformation describe-stacks --stack-name "$STACK_NAME" --output text --query "Stacks[].Outputs[?OutputKey == 'ExternalELBUrl'].OutputValue" ) > page.html
+            grep -q 'LEMP' page.html
             aws cloudformation delete-stack --stack-name "$PRODUCT_NAME-$CIRCLE_BUILD_NUM"
             aws cloudformation wait stack-delete-complete --stack-name "$PRODUCT_NAME-$CIRCLE_BUILD_NUM"
 
