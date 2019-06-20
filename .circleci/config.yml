@@ -15,6 +15,7 @@ jobs:
             aws ecr get-authorization-token --query 'authorizationData[0]' | jq -r '("export AUTHTOKEN=\(.authorizationToken)", .proxyEndpoint | ltrimstr("https://") | "export REPO=\(.)")' >> $BASH_ENV
             source $BASH_ENV
             jq -r '.meta.build_args | to_entries | ((map("--build-arg=\(.key)=\(.value)") | join(" ") as $x | "export BUILD_ARGS=\"\($x)\""), (.[] | "export \(.key)=\"\(.value)\""))' manifest.json >> $BASH_ENV
+            echo 'export DEBUG=1' >> $BASH_ENV
       - run:
           name: Build & push product image
           command: |
@@ -39,11 +40,12 @@ jobs:
           name: Test deployment
           command: |
             STACK_NAME="$PRODUCT_NAME-$CIRCLE_BUILD_NUM"
+            jq -f /usr/share/tklc/templates/ecs.jq manifest.json | jq -scf /usr/share/tklc/templates/cf.jq | tee template.json
             aws cloudformation create-stack \
             --capabilities CAPABILITY_IAM \
             --stack-name "$STACK_NAME" \
             --parameters 'ParameterKey=KeyName,ParameterValue=test' \
-            --template-body "$( jq -f /usr/share/tklc/templates/ecs.jq manifest.json | jq -scf /usr/share/tklc/templates/cf.jq )"
+            --template-body "$( cat template.json )"
             aws cloudformation wait stack-create-complete --stack-name "$STACK_NAME"
             curl $( aws cloudformation describe-stacks --stack-name "$STACK_NAME" --output text --query "Stacks[].Outputs[?OutputKey == 'ExternalELBUrl'].OutputValue" ) \
             | grep -q 'LEMP'
